@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'khalilabbaoui/gestionetudiant' // Nom de l'image Docker sur Docker Hub
+        DOCKER_IMAGE = 'khalilabbaoui/gestionetudiant:latest' // Nom de l'image Docker sur Docker Hub
         MYSQL_IMAGE = 'mysql:5.7' // Image officielle de MySQL version 5.7
         MYSQL_CONTAINER = 'mysql_test' // Nom du conteneur MySQL
         APP_PORT = '8081' // Port exposé pour accéder à l'application
