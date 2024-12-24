@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  gestionetudiant:
+    build: .
+    ports:
+      - "8081:8080"  # Exposer le port 8080 de l'application Spring Boot sur le port 8081
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/gestionetudiant
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+    depends_on:
+      - mysql
+    restart: always  # S'assurer que l'application redémarre en cas d'erreur
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: gestionetudiant
+    ports:
+      - "3306:3306"  # Exposer MySQL sur le port 3306
+    volumes:
+      - mysql-data:/var/lib/mysql  # Volume persistant pour la base de données
+    restart: always  # S'assurer que MySQL redémarre en cas d'erreur
+
+volumes:
+  mysql-data:
+    driver: local  # Utilisation d'un volume persistant pour MySQL
