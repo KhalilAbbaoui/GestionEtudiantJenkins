@@ -14,8 +14,8 @@ pipeline {
         // Étape pour récupérer le code source depuis le SCM
         stage('Checkout') {
             steps {
-            // Cette commande utilise la configuration par défaut de Jenkins pour cloner le code source
-           // à partir du SCM (Source Code Management) configuré dans le job Jenkins.
+                // Cette commande utilise la configuration par défaut de Jenkins pour cloner le code source
+                // à partir du SCM (Source Code Management) configuré dans le job Jenkins.
                 checkout scm
             }
         }
@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building the project with Maven and running tests...' // Log pour indiquer la progression
-                    sh 'mvn clean install -DskipTests=false' // Nettoyer, compiler et exécuter les tests
+                    bat 'mvn clean install -DskipTests=false' // Nettoyer, compiler et exécuter les tests
                 }
             }
         }
@@ -35,12 +35,12 @@ pipeline {
             steps {
                 script {
                     echo 'Starting MySQL container...' // Log pour informer sur le démarrage de MySQL
-                    sh """
-                    docker run --name ${MYSQL_CONTAINER} -d \
-                        -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} \
-                        -e MYSQL_DATABASE=${MYSQL_DATABASE} \
-                        -p 3306:3306 \ // Expose MySQL sur le port 3306
-                        ${MYSQL_IMAGE} // Utilisation de l'image MySQL officielle
+                    bat """
+                    docker run --name ${MYSQL_CONTAINER} -d ^
+                        -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} ^
+                        -e MYSQL_DATABASE=${MYSQL_DATABASE} ^
+                        -p 3306:3306 ^
+                        ${MYSQL_IMAGE}
                     """
                 }
             }
@@ -51,7 +51,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building the Docker image for the application...' // Log pour la construction de l'image
-                    sh "docker build -t ${DOCKER_IMAGE}:latest ."
+                    bat "docker build -t ${DOCKER_IMAGE}:latest ."
                 }
             }
         }
@@ -61,8 +61,8 @@ pipeline {
             steps {
                 script {
                     echo 'Pushing the Docker image to Docker Hub...' // Log pour indiquer le push
-                    sh "echo ${env.DOCKER_HUB_PASSWORD} | docker login -u ${env.DOCKER_HUB_USERNAME} --password-stdin"
-                    sh "docker push ${DOCKER_IMAGE}:latest"
+                    bat "echo ${env.DOCKER_HUB_PASSWORD} | docker login -u ${env.DOCKER_HUB_USERNAME} --password-stdin"
+                    bat "docker push ${DOCKER_IMAGE}:latest"
                 }
             }
         }
@@ -72,10 +72,10 @@ pipeline {
             steps {
                 script {
                     echo 'Starting the application container...' // Log pour informer sur le démarrage de l'application
-                    sh """
-                    docker stop gestionetudiant || true && docker rm gestionetudiant || true // Arrêter et supprimer les conteneurs existants
-                    docker run -d -p ${APP_PORT}:8081 \
-                        --name gestionetudiant \
+                    bat """
+                    docker stop gestionetudiant || echo "No existing container to stop" && docker rm gestionetudiant || echo "No existing container to remove"
+                    docker run -d -p ${APP_PORT}:8081 ^
+                        --name gestionetudiant ^
                         ${DOCKER_IMAGE}:latest
                     """
                 }
