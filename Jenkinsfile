@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven:'Maven 3.9.5'
+        maven 'Maven 3.9.5'
     }
     environment {
         DOCKER_IMAGE = 'khalilabbaoui/gestionetudiant:latest' // Nom de l'image Docker sur Docker Hub
