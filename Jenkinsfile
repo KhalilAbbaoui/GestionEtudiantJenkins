@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    tools{
+        maven:'Maven 3.9.5'
+    }
     environment {
         DOCKER_IMAGE = 'khalilabbaoui/gestionetudiant:latest' // Nom de l'image Docker sur Docker Hub
         MYSQL_IMAGE = 'mysql:5.7' // Image officielle de MySQL version 5.7
@@ -8,6 +10,7 @@ pipeline {
         APP_PORT = '8081' // Port exposé pour accéder à l'application
         MYSQL_ROOT_PASSWORD = 'rootpassword' // Mot de passe administrateur pour MySQL
         MYSQL_DATABASE = 'gestionetudiant' // Nom de la base de données utilisée par l'application
+
     }
 
     stages {
