@@ -38,6 +38,7 @@ class EtudiantServiceImplTest {
         lenient().when(etudiantRepository.findAll()).thenReturn(Arrays.asList(etudiant)); // Simuler le findAll()
         lenient().when(etudiantRepository.existsById(1L)).thenReturn(true); // Simuler le existsById pour ID 1
         lenient().doNothing().when(etudiantRepository).deleteById(1L); // Simuler la suppression d'un étudiant par ID
+        lenient().when(etudiantRepository.findByNomAndPrenom("John", "Doe")).thenReturn(Arrays.asList(etudiant)); // Simuler la recherche par nom et prénom
     }
 
     @Test
@@ -66,11 +67,45 @@ class EtudiantServiceImplTest {
     }
 
     @Test
+    void recupererParNomEtPrenom_returnsEtudiants_whenExists() {
+        // Tester si la méthode retourne l'étudiant correct en fonction du nom et prénom
+        var result = etudiantService.recupererParNomEtPrenom("John", "Doe");
+        assertFalse(result.isEmpty()); // Vérifier que la liste n'est pas vide
+        assertEquals("John", result.get(0).getNom()); // Vérifier que le nom est "John"
+        assertEquals("Doe", result.get(0).getPrenom()); // Vérifier que le prénom est "Doe"
+    }
+
+    @Test
     void saveEtudiant_savesEtudiant() {
         // Tester si l'ajout d'un étudiant fonctionne comme prévu
         Etudiant savedEtudiant = etudiantService.add(etudiant);
         assertNotNull(savedEtudiant); // Vérifier que l'étudiant sauvegardé n'est pas null
         assertEquals("John", savedEtudiant.getNom()); // Vérifier que le prénom est "John"
+    }
+
+    @Test
+    void updateEtudiant_updatesEtudiant_whenExists() {
+        // Tester si la mise à jour d'un étudiant fonctionne correctement
+        Etudiant updatedEtudiant = new Etudiant("John", "Doe Updated");
+        updatedEtudiant.setAdresse("New Address");
+        updatedEtudiant.setTelephone(1234567890L);
+
+        Etudiant result = etudiantService.update(1L, updatedEtudiant);
+
+        assertNotNull(result); // Vérifier que l'étudiant mis à jour n'est pas null
+        assertEquals("John", result.getNom()); // Vérifier que le prénom est "John"
+        assertEquals("Doe Updated", result.getPrenom()); // Vérifier que le nom a bien été mis à jour
+    }
+
+    @Test
+    void updateEtudiant_returnsNull_whenNotExists() {
+        // Tester si la mise à jour retourne null lorsque l'étudiant n'existe pas
+        Etudiant updatedEtudiant = new Etudiant("John", "Doe Updated");
+        lenient().when(etudiantRepository.findById(999L)).thenReturn(Optional.empty());
+
+        Etudiant result = etudiantService.update(999L, updatedEtudiant);
+
+        assertNull(result); // Vérifier que le résultat est null
     }
 
     @Test
