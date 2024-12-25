@@ -4,6 +4,7 @@ import com.tp.GestionEtudiant.Entities.Etudiant;
 import com.tp.GestionEtudiant.Services.EtudiantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,6 +26,7 @@ public class EtudiantControllerTest {
     @Mock
     private EtudiantService etudiantService;
 
+    @InjectMocks
     private EtudiantController etudiantController;
 
     private Etudiant etudiant;
