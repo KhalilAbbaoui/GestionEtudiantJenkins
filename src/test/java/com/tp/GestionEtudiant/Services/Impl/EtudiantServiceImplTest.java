@@ -4,25 +4,22 @@ import com.tp.GestionEtudiant.Entities.Etudiant;
 import com.tp.GestionEtudiant.Repositories.EtudiantRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
+@AutoConfigureMockMvc // Configure MockMvc for HTTP tests
 @SpringBootTest
-
 class EtudiantServiceImplTest {
 
     @Autowired
-    private EtudiantRepository etudiantRepository; // Injecte le repository réel
+    private EtudiantRepository etudiantRepository; // Inject real repository
 
     @Autowired
-    private EtudiantServiceImpl etudiantService; // Injecte le service réel
+    private EtudiantServiceImpl etudiantService; // Inject real service
 
     private Etudiant etudiant;
 
@@ -32,7 +29,7 @@ class EtudiantServiceImplTest {
         etudiant.setNom("Doe");
         etudiant.setPrenom("John");
 
-        // Sauvegarder un étudiant dans la base de données avant chaque test
+        // Save an Etudiant in the database before each test
         etudiantRepository.save(etudiant);
     }
 
