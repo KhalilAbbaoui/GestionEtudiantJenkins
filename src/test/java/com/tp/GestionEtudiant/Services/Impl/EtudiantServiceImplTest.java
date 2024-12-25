@@ -2,7 +2,6 @@ package com.tp.GestionEtudiant.Services.Impl;
 
 import com.tp.GestionEtudiant.Entities.Etudiant;
 import com.tp.GestionEtudiant.Repositories.EtudiantRepository;
-import com.tp.GestionEtudiant.Services.EtudiantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -98,18 +97,25 @@ class EtudiantServiceImplTest {
 
     @Test
     void updateEtudiant_updatesEtudiant_whenExists() {
-        // Tester si la mise à jour d'un étudiant fonctionne correctement
+        // Create an updated Etudiant object with new values
         Etudiant updatedEtudiant = new Etudiant("John", "Doe Updated");
         updatedEtudiant.setAdresse("New Address");
         updatedEtudiant.setTelephone(1234567890L);
 
+        // Mock the repository to return an Etudiant when findById is called
+        lenient().when(etudiantRepository.findById(1L)).thenReturn(Optional.of(etudiant));
+
+        // Call the update method from the service
         Etudiant result = etudiantService.update(1L, updatedEtudiant);
 
-        assertNotNull(result); // Vérifier que l'étudiant mis à jour n'est pas null
-        assertEquals("John", result.getNom()); // Vérifier que le prénom est "John"
-        assertEquals("Doe Updated", result.getPrenom()); // Vérifier que le nom a bien été mis à jour
-        assertEquals("New Address", result.getAdresse()); // Vérifier que l'adresse a bien été mise à jour
-        assertEquals(1234567890L, result.getTelephone()); // Vérifier que le téléphone a bien été mis à jour
+        // Assert the result is not null
+        assertNotNull(result);
+
+        // Validate the updated values
+        assertEquals("John", result.getNom()); // Check if the name is "John"
+        assertEquals("Doe Updated", result.getPrenom()); // Check if the last name is updated
+        assertEquals("New Address", result.getAdresse()); // Check if the address is updated
+        assertEquals(1234567890L, result.getTelephone()); // Check if the phone number is updated
     }
 
     @Test
