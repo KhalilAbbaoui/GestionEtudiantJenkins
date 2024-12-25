@@ -77,10 +77,23 @@ class EtudiantServiceImplTest {
 
     @Test
     void saveEtudiant_savesEtudiant() {
-        // Tester si l'ajout d'un étudiant fonctionne comme prévu
+        // Create an Etudiant object
+        Etudiant etudiant = new Etudiant("John", "Doe");
+
+        // Mock the repository to return the same Etudiant when save is called
+        when(etudiantRepository.save(any(Etudiant.class))).thenReturn(etudiant);
+
+        // Call the add method from the service
         Etudiant savedEtudiant = etudiantService.add(etudiant);
-        assertNotNull(savedEtudiant); // Vérifier que l'étudiant sauvegardé n'est pas null
-        assertEquals("John", savedEtudiant.getNom()); // Vérifier que le prénom est "John"
+
+        // Assert that the returned Etudiant is not null
+        assertNotNull(savedEtudiant);
+
+        // Assert that the name is "John"
+        assertEquals("John", savedEtudiant.getNom());
+
+        // Optionally, check the last name as well (this is just an extra validation)
+        assertEquals("Doe", savedEtudiant.getPrenom());
     }
 
     @Test
