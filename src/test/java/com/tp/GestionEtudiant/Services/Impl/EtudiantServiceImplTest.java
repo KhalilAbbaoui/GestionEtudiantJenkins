@@ -95,6 +95,8 @@ class EtudiantServiceImplTest {
         assertNotNull(result); // Vérifier que l'étudiant mis à jour n'est pas null
         assertEquals("John", result.getNom()); // Vérifier que le prénom est "John"
         assertEquals("Doe Updated", result.getPrenom()); // Vérifier que le nom a bien été mis à jour
+        assertEquals("New Address", result.getAdresse()); // Vérifier que l'adresse a bien été mise à jour
+        assertEquals(1234567890L, result.getTelephone()); // Vérifier que le téléphone a bien été mis à jour
     }
 
     @Test
