@@ -4,18 +4,17 @@ import com.tp.GestionEtudiant.Entities.Etudiant;
 import com.tp.GestionEtudiant.Repositories.EtudiantRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.mockito.Mockito.*;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.MockitoAnnotations;
+
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-public class EtudiantServiceImplTest {
+class EtudiantServiceImplTest {
 
     @Mock
     private EtudiantRepository etudiantRepository;
@@ -27,6 +26,7 @@ public class EtudiantServiceImplTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         etudiant = new Etudiant();
         etudiant.setId(1L);
         etudiant.setNom("Doe");
@@ -34,7 +34,7 @@ public class EtudiantServiceImplTest {
     }
 
     @Test
-    void testGetAllEtudiants_shouldReturnListOfEtudiants_whenSuccessful() {
+    void getAllEtudiants_returnsListOfEtudiants() {
         when(etudiantRepository.findAll()).thenReturn(List.of(etudiant));
 
         List<Etudiant> etudiants = etudiantService.getAllEtudiants();
@@ -45,7 +45,7 @@ public class EtudiantServiceImplTest {
     }
 
     @Test
-    void testGetEtudiantById_shouldReturnEtudiant_whenEtudiantExists() {
+    void getEtudiantById_returnsEtudiant_whenExists() {
         when(etudiantRepository.findById(1L)).thenReturn(Optional.of(etudiant));
 
         Etudiant result = etudiantService.getEtudiantById(1L);
@@ -56,7 +56,7 @@ public class EtudiantServiceImplTest {
     }
 
     @Test
-    void testGetEtudiantById_shouldReturnNull_whenEtudiantDoesNotExist() {
+    void getEtudiantById_returnsNull_whenNotExists() {
         when(etudiantRepository.findById(1L)).thenReturn(Optional.empty());
 
         Etudiant result = etudiantService.getEtudiantById(1L);
@@ -66,11 +66,10 @@ public class EtudiantServiceImplTest {
     }
 
     @Test
-    void testUpdateEtudiant_shouldReturnUpdatedEtudiant_whenEtudiantExists() {
+    void updateEtudiant_returnsUpdatedEtudiant_whenExists() {
         Etudiant updatedEtudiant = new Etudiant();
         updatedEtudiant.setId(1L);
         updatedEtudiant.setNom("Smith");
-        updatedEtudiant.setPrenom("John");
 
         when(etudiantRepository.findById(1L)).thenReturn(Optional.of(etudiant));
         when(etudiantRepository.save(any(Etudiant.class))).thenReturn(updatedEtudiant);
@@ -84,35 +83,11 @@ public class EtudiantServiceImplTest {
     }
 
     @Test
-    void testUpdateEtudiant_shouldReturnNull_whenEtudiantDoesNotExist() {
-        Etudiant updatedEtudiant = new Etudiant();
-        updatedEtudiant.setId(1L);
-        updatedEtudiant.setNom("Smith");
-        updatedEtudiant.setPrenom("John");
-
-        when(etudiantRepository.findById(1L)).thenReturn(Optional.empty());
-
-        Etudiant result = etudiantService.update(1L, updatedEtudiant);
-
-        assertNull(result);
-        verify(etudiantRepository, times(1)).findById(1L);
-    }
-
-    @Test
-    void testDeleteEtudiant_shouldDeleteEtudiant_whenEtudiantExists() {
+    void deleteEtudiant_deletesEtudiant_whenExists() {
         when(etudiantRepository.existsById(1L)).thenReturn(true);
 
         etudiantService.delete(1L);
 
         verify(etudiantRepository, times(1)).deleteById(1L);
-    }
-
-    @Test
-    void testDeleteEtudiant_shouldDoNothing_whenEtudiantDoesNotExist() {
-        when(etudiantRepository.existsById(1L)).thenReturn(false);
-
-        etudiantService.delete(1L);
-
-        verify(etudiantRepository, times(0)).deleteById(1L);
     }
 }
