@@ -16,23 +16,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class EtudiantServiceImplTest {
+
     @Mock
     private EtudiantRepository etudiantRepository;
+
     @InjectMocks
     private EtudiantServiceImpl etudiantService;
+
     private Etudiant etudiant;
 
     @BeforeEach
-    void setUp()
-    {
-        etudiant=new Etudiant();
+    void setUp() {
+        etudiant = new Etudiant();
         etudiant.setId(1L);
         etudiant.setNom("Doe");
         etudiant.setPrenom("John");
     }
+
     @Test
-    void testGetAllEtudiants()
-    {
+    void testGetAllEtudiants_shouldReturnListOfEtudiants_whenSuccessful() {
         when(etudiantRepository.findAll()).thenReturn(List.of(etudiant));
 
         List<Etudiant> etudiants = etudiantService.getAllEtudiants();
@@ -43,7 +45,7 @@ public class EtudiantServiceImplTest {
     }
 
     @Test
-    void testGetEtudiantById() {
+    void testGetEtudiantById_shouldReturnEtudiant_whenEtudiantExists() {
         when(etudiantRepository.findById(1L)).thenReturn(Optional.of(etudiant));
 
         Etudiant result = etudiantService.getEtudiantById(1L);
@@ -52,8 +54,19 @@ public class EtudiantServiceImplTest {
         assertEquals("Doe", result.getNom());
         verify(etudiantRepository, times(1)).findById(1L);
     }
+
     @Test
-    void testUpdateEtudiant() {
+    void testGetEtudiantById_shouldReturnNull_whenEtudiantDoesNotExist() {
+        when(etudiantRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Etudiant result = etudiantService.getEtudiantById(1L);
+
+        assertNull(result);
+        verify(etudiantRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testUpdateEtudiant_shouldReturnUpdatedEtudiant_whenEtudiantExists() {
         Etudiant updatedEtudiant = new Etudiant();
         updatedEtudiant.setId(1L);
         updatedEtudiant.setNom("Smith");
@@ -69,13 +82,37 @@ public class EtudiantServiceImplTest {
         verify(etudiantRepository, times(1)).findById(1L);
         verify(etudiantRepository, times(1)).save(any(Etudiant.class));
     }
+
     @Test
-    void testDeleteEtudiant() {
+    void testUpdateEtudiant_shouldReturnNull_whenEtudiantDoesNotExist() {
+        Etudiant updatedEtudiant = new Etudiant();
+        updatedEtudiant.setId(1L);
+        updatedEtudiant.setNom("Smith");
+        updatedEtudiant.setPrenom("John");
+
+        when(etudiantRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Etudiant result = etudiantService.update(1L, updatedEtudiant);
+
+        assertNull(result);
+        verify(etudiantRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testDeleteEtudiant_shouldDeleteEtudiant_whenEtudiantExists() {
         when(etudiantRepository.existsById(1L)).thenReturn(true);
 
         etudiantService.delete(1L);
 
         verify(etudiantRepository, times(1)).deleteById(1L);
     }
-}
 
+    @Test
+    void testDeleteEtudiant_shouldDoNothing_whenEtudiantDoesNotExist() {
+        when(etudiantRepository.existsById(1L)).thenReturn(false);
+
+        etudiantService.delete(1L);
+
+        verify(etudiantRepository, times(0)).deleteById(1L);
+    }
+}

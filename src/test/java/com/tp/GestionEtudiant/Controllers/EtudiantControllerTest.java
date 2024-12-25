@@ -44,7 +44,7 @@ public class EtudiantControllerTest {
     }
 
     @Test
-    void testGetAllEtudiants() throws Exception {
+    void testGetAllEtudiants_shouldReturnListOfEtudiants_whenSuccessful() throws Exception {
         when(etudiantService.getAllEtudiants()).thenReturn(List.of(etudiant));
 
         mockMvc.perform(get("/etudiants"))
@@ -55,7 +55,7 @@ public class EtudiantControllerTest {
     }
 
     @Test
-    void testGetEtudiantById() throws Exception {
+    void testGetEtudiantById_shouldReturnEtudiant_whenEtudiantExists() throws Exception {
         when(etudiantService.getEtudiantById(1L)).thenReturn(etudiant);
 
         mockMvc.perform(get("/etudiants/{id}", 1L))
@@ -66,15 +66,33 @@ public class EtudiantControllerTest {
     }
 
     @Test
-    void testAddEtudiant() throws Exception {
-        Etudiant etudiant = new Etudiant(1L, "Doe", "John", "123 Main St", 1234567890L);
+    void testGetEtudiantById_shouldReturnNotFound_whenEtudiantDoesNotExist() throws Exception {
+        when(etudiantService.getEtudiantById(1L)).thenReturn(null);
+
+        mockMvc.perform(get("/etudiants/{id}", 1L))
+                .andExpect(status().isNotFound());
+
+        verify(etudiantService, times(1)).getEtudiantById(1L);
+    }
+
+    @Test
+    void testAddEtudiant_shouldReturnCreated_whenEtudiantIsValid() throws Exception {
         doNothing().when(etudiantService).add(any(Etudiant.class));
+
         mockMvc.perform(post("/etudiants")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nom\":\"Doe\", \"prenom\":\"John\", \"adresse\":\"123 Main St\", \"telephone\":\"1234567890\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.nom").value("Doe"));
+
         verify(etudiantService, times(1)).add(any(Etudiant.class));
     }
 
+    @Test
+    void testAddEtudiant_shouldReturnBadRequest_whenValidationFails() throws Exception {
+        mockMvc.perform(post("/etudiants")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nom\":\"\", \"prenom\":\"John\", \"adresse\":\"\", \"telephone\":\"1234567890\"}"))
+                .andExpect(status().isBadRequest());
+    }
 }
