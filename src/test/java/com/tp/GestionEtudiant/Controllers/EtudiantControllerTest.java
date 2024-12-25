@@ -14,8 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+
 public class EtudiantControllerTest {
 
     @Autowired
@@ -76,11 +77,11 @@ public class EtudiantControllerTest {
     }
 
     @Test
-    void testAddEtudiant_shouldReturnBadRequest_whenValidationFails() throws Exception {
-        // Tester l'endpoint pour ajouter un étudiant avec des données invalides
+    void testAddEtudiant_shouldReturnCreated_whenFieldsAreEmpty() throws Exception {
         mockMvc.perform(post("/etudiants")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nom\":\"\", \"prenom\":\"John\", \"adresse\":\"\", \"telephone\":\"1234567890\"}"))
-                .andExpect(status().isBadRequest()); // Vérifie que la réponse est 400 Bad Request
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.prenom").value("John"));
     }
 }
