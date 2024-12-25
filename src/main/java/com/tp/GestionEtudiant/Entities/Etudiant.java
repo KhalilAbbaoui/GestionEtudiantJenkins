@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class Etudiant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +20,11 @@ public class Etudiant {
     private String prenom;
     private String adresse;
     private Long telephone;
+
+    public Etudiant(String nom, String prenom) {
+        this.nom=nom;
+        this.prenom=prenom;
+    }
 
     public Long getId() {
         return id;
