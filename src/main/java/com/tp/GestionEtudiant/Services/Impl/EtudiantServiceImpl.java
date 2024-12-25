@@ -27,8 +27,9 @@ public class EtudiantServiceImpl implements EtudiantService {
         return etudiantRepository.findByNomAndPrenom(nom, prenom);
     }
     @Override
-    public void add(Etudiant etudiant) {
+    public Etudiant add(Etudiant etudiant) {
         etudiantRepository.save(etudiant);
+        return etudiant;
     }
     public Etudiant update(Long id, Etudiant etudiant) {
         Optional<Etudiant> existingEtudiant = etudiantRepository.findById(id);
