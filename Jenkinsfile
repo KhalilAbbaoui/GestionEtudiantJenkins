@@ -10,7 +10,6 @@ pipeline {
         APP_PORT = '8081' // Port exposé pour accéder à l'application
         MYSQL_ROOT_PASSWORD = 'rootpassword' // Mot de passe administrateur pour MySQL
         MYSQL_DATABASE = 'gestionetudiant' // Nom de la base de données utilisée par l'application
-
     }
 
     stages {
@@ -21,14 +20,27 @@ pipeline {
             }
         }
 
-        // Étape pour compiler le projet et exécuter les tests Maven
-        stage('Build & Test') {
+        // Étape pour compiler le projet
+        stage('Build') {
             steps {
                 script {
-                    echo 'Building the project with Maven and running tests...' // Log pour indiquer la progression
+                    echo 'Building the project with Maven...' // Log pour indiquer la progression
                     sh '''
-                    # Exécution de la commande Maven pour nettoyer, compiler et exécuter les tests
-                    mvn clean install -DskipTests=false
+                    # Exécution de la commande Maven pour nettoyer et compiler le projet
+                    mvn clean compile
+                    '''
+                }
+            }
+        }
+
+        // Étape pour exécuter les tests
+        stage('Test') {
+            steps {
+                script {
+                    echo 'Running tests with Maven...' // Log pour indiquer l'exécution des tests
+                    sh '''
+                    # Exécution des tests avec Maven
+                    mvn test
                     '''
                 }
             }
@@ -95,7 +107,6 @@ pipeline {
             }
         }
     }
-
     post {
         // Message de succès
         success {
