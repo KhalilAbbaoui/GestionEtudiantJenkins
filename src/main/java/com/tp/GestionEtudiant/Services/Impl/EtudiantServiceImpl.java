@@ -14,6 +14,10 @@ public class EtudiantServiceImpl implements EtudiantService {
 
     @Autowired
     private EtudiantRepository etudiantRepository;
+    public EtudiantServiceImpl(EtudiantRepository etudiantRepository)
+    {
+        this.etudiantRepository=etudiantRepository;
+    }
     @Override
     public List<Etudiant> getAllEtudiants() {
         return etudiantRepository.findAll();
