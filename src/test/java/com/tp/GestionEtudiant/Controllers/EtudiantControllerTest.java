@@ -27,15 +27,15 @@ public class EtudiantControllerTest {
     private MockMvc mockMvc; // Permet d'effectuer des requêtes HTTP simulées pour tester les contrôleurs.
 
     @Autowired
-    private EtudiantService etudiantService; // Service utilisé pour gérer la logique métier, bien qu'il ne soit pas utilisé ici directement.
+    private EtudiantService etudiantService; 
 
     @Autowired
-    private EtudiantRepository etudiantRepository; // Repository pour interagir avec la base de données.
+    private EtudiantRepository etudiantRepository;
 
     @Autowired
     private ObjectMapper objectMapper; // Permet de convertir des objets Java en JSON et vice versa.
 
-    private Etudiant etudiant; // Variable pour stocker un étudiant avant les tests.
+    private Etudiant etudiant;
 
     @BeforeEach
     void setUp() {
